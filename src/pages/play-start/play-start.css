@@ -1,0 +1,194 @@
+@charset "UTF-8";
+
+/* ==============================
+play-start
+*/
+.play-start {
+  overflow: hidden;
+}
+
+.play-start__inner {
+  padding: 8px 0 20px;
+  display: grid;
+  grid-template-rows: 30px 1fr 150px;
+  height: 100dvh;
+  width: 90%;
+}
+
+/* カウンターエリア */
+.counter-wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  /* かならず初期値は比率で計算すること */
+  transition: transform .4s;
+}
+
+.counter-wrapper.is_ending-active {
+  transform: translate(-100vw, 0);
+}
+
+.counter-wrapper__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.time-counter {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.time-counter__text {
+  font-size: 1.8rem;
+}
+
+.time-counter__time {
+  font-size: 2.8rem;
+}
+
+.fried-egg-counter {
+  display: flex;
+  align-items: center;
+}
+
+.fried-egg-counter__image-wrapper {
+  width: 30px;
+  height: fit-content;
+}
+
+.fried-egg-counter__image {
+  width: 100%;
+}
+
+.fried-egg-counter__count {
+  font-size: 2.8rem;
+}
+
+/* キャラクターの表示領域 */
+.character-area {
+  position: relative;
+}
+
+.character-image__wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  z-index: 0;
+}
+
+.character-image {
+  width: 100%;
+}
+
+/* 目玉焼きボタンの表示領域 */
+.fried-egg-button-wrapper {
+  position: relative;
+  z-index: 1;
+  transition: transform .4s;
+}
+
+/* Ending画面表示時 */
+.fried-egg-button-wrapper.is_ending-active {
+  transform: translate(-100vw, 0);
+}
+
+.fried-egg-button {
+  width: 100%;
+  max-width: 230px;
+  height: fit-content;
+  padding: 0;
+  align-self: flex-end;
+  justify-self: center;
+  transform: scale(1);
+}
+
+.fried-egg-button__image {
+  width: 100%;
+}
+
+/* 弾のアニメーション */
+.fried-egg-bullet {
+  width: 20px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  pointer-events: none;
+  transform: translate(-50%, 0);
+}
+
+.fried-egg-bullet-is-active {
+  animation: bulletMove 1s linear forwards;
+}
+
+/* 目玉焼きボタンの伸縮 */
+.btn-scale-anim {
+  animation: btn-scale-anim .04s linear forwards;
+}
+
+@keyframes btn-scale-anim {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(.6);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.character-image__wrapper.is_collision {
+  animation: collisionFlash .1s linear forwards;
+}
+
+@keyframes collisionFlash {
+  0% {
+    mix-blend-mode: normal;
+  }
+
+  10% {
+    mix-blend-mode: plus-lighter;
+  }
+
+  20% {
+    mix-blend-mode: normal;
+  }
+
+  30% {
+    mix-blend-mode: plus-lighter;
+  }
+
+  40% {
+    mix-blend-mode: normal;
+  }
+
+  50% {
+    mix-blend-mode: plus-lighter;
+  }
+
+  60% {
+    mix-blend-mode: normal;
+  }
+
+  70% {
+    mix-blend-mode: plus-lighter;
+  }
+
+  80% {
+    mix-blend-mode: normal;
+  }
+
+  90% {
+    mix-blend-mode: plus-lighter;
+  }
+
+  100% {
+    mix-blend-mode: normal;
+  }
+}

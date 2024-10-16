@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+/* ==============================
+play-end
+*/
+.play-end {
+  overflow: hidden;
+  position: fixed;
+  top: 46%;
+  left: 0%;
+  transform: translate(100%, -46%);
+  z-index: 1;
+  width: 100%;
+  transition: transform .4s;
+}
+
+/* テキスト表示時 */
+.play-end.is_active {
+  transform: translate(0%, -46%);
+}
+
+/* Ending画面表示のため、画面外へ移動時*/
+.play-end.is_active.is_ending-active {
+  transform: translate(-100%, -46%);
+}
+
+.play-end__inner {
+  display: grid;
+  place-content: center;
+}
+
+/* おしまい！テキスト */
+.play-end-text-wrapper {
+  text-align: center;
+  width: 100%;
+}
+
+.play-end-text {
+  font-size: 5rem;
+}

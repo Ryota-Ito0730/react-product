@@ -1,0 +1,146 @@
+@charset "UTF-8";
+
+/* ==============================
+ending
+*/
+.ending {
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  width: 100%;
+  transform: translate(100%, 0);
+  transition: transform 1s;
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.ending.is_ending-active {
+  transform: translate(0%, 0);
+}
+
+.ending__inner {
+  padding: 8px 0 20px;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: fit-content;
+  gap: 40px;
+}
+
+/* カウンターエリア */
+.result-wrapper {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  align-self: center;
+}
+
+.result-wrapper__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 36px;
+}
+
+.result-fried-egg {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.result-fried-egg__image-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 2.8rem;
+  gap: 8px;
+}
+
+.result-fried-egg__image {
+  width: 46px;
+}
+
+.result-fried-egg__count {
+  font-size: 4.6rem;
+}
+
+.result-growth-rate__percentage {
+  font-size: 4.6rem;
+}
+
+.result-growth-rate {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.result-growth-rate__image-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 2.8rem;
+  gap: 8px;
+}
+
+.result-growth-rate__image {
+  width: 46px;
+}
+
+
+/* キャラクターの表示領域 */
+.character-area {
+  position: relative;
+}
+
+.character-image__wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  z-index: 0;
+}
+
+.character-image {
+  width: 100%;
+}
+
+/* 目玉焼きボタンの表示領域 */
+.fried-egg-button {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 230px;
+  height: fit-content;
+  padding: 0;
+  align-self: flex-end;
+  justify-self: center;
+}
+
+.fried-egg-button__image {
+  width: 100%;
+}
+
+/* おしまい！テキスト */
+.ending-text-wrapper {
+  text-align: center;
+  position: fixed;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -46%);
+  width: 100%;
+}
+
+.ending-text {
+  font-size: 5rem;
+}

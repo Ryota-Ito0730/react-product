@@ -1,0 +1,82 @@
+@charset "UTF-8";
+
+/* ==============================
+stage-select
+*/
+.stage-select {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 16px 0;
+}
+
+.button--back {
+  margin: 0;
+}
+
+.stage-select__inner {
+  max-height: 594px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stage-select__button-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  height: 300px;
+  width: 100%;
+  gap: clamp(40px, 20vw, 70px) clamp(40px, 20vw, 70px);
+  max-width: 300px;
+  margin: auto;
+}
+
+.stage-select__button {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #fcc000;
+  background: no-repeat center center / contain;
+  background-size: 105%;
+  margin: 0 auto;
+}
+
+/* ステージ:ネコ */
+.stage-select__button--cat {
+  background-image: url(../../assets/images/stage-select/cat.webp);
+  margin-bottom: 0;
+}
+
+/* ステージ:シロクマ */
+.stage-select__button--polar-bear {
+  background-image: url(../../assets/images/stage-select/polar-bear.webp);
+  margin-bottom: 0;
+}
+
+/* ステージ:イヌ */
+.stage-select__button--dog {
+  background-image: url(../../assets/images/stage-select/dog.webp);
+  margin-bottom: 0;
+}
+
+/* ステージ:ウーパールーパー */
+.stage-select__button--axolot {
+  background-image: url(../../assets/images/stage-select/axolot.webp);
+  margin-bottom: 0;
+}
+
+@media (max-width:500px) {
+  .stage-select__button-wrapper {
+    width: 100%;
+    gap: clamp(20px, 7vw, 60px) clamp(20px, 12vw, 60px);
+    max-width: 300px;
+    margin: auto;
+    padding: 0;
+    height: fit-content;
+  }
+
+  .button--back {
+    padding: 11px 8px;
+  }
+}
