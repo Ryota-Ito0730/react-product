@@ -1,7 +1,10 @@
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useRef, useCallback } from "react";
 import PlayEnd from "../play-end/PlayEnd";
 import Ending from "../ending/Ending";
 import {SoundProvider} from '../../App'
+
+import hitJudgment from "../../helpers/hitJudgment";// 当たり判定用関数をインポート
+
 import '../../reset.css';
 import '../../common.css';
 import './play-start.css';
@@ -39,31 +42,23 @@ function PlayStart({stateCharacter,handleView,argHandleAudioPlay,argHandleAudioS
     }
   }
   useEffect(()=>{
-    
       const visibleEnding = () => {
-        
         let tempCharaWidth = 30;
         if(document.getElementsByClassName("character-image")[0]){
           tempCharaWidth = document.getElementsByClassName("character-image")[0].offsetWidth;
         }
-    
         setCharacterWidth(tempCharaWidth);// 成長度計算用のwidth
         setIsEndingState(true);// Ending画面へ一斉切り替えのためのclass付与
-        
       }
       let id = setTimeout(()=>{setTime(time - 1);},1000);
       if(time === 0){
         clearTimeout(id);
-        
         setIsDisabled(true);// 目玉焼きボタンの押下を無効化
-
         // PlayEndコンポーネント(おしまい!テキスト)を呼び出す
         setIsActive(true);
-
         // おしまいテキスト表示完了後から、2秒後に一気にEnding画面に切り替え
         setTimeout(visibleEnding,2500);
       }
-
     }
   ,[time]);// useEffect
 
@@ -102,46 +97,102 @@ function PlayStart({stateCharacter,handleView,argHandleAudioPlay,argHandleAudioS
     setBulletNums([...bulletNums,bulletKey]);
   }
 
-  // 弾の飛距離を計測しtranslateYの値として付与
+  /**
+   * 初回レンダーおよびヒット時:弾の飛距離を計測しtranslateYの値として付与
+   * 変数: bulletMoveState を更新していく
+   * 
+   */
   const [bulletMoveState, setbulletMoveState] = useState(0);
-  useEffect(() => {
+  const calcBulletMoveDistance = () => {
     // 弾が必要な移動距離 = キャラクターの下側座標と目玉焼きボタンの上側座標の差分
-    // キャラクタの下側座標値を取得する
     const targetElement = document.getElementsByClassName("character-image")[0];
     const targetElementBottom = targetElement.getBoundingClientRect().bottom;
-    // 弾の発射前の上側座標を取得する(目玉焼きボタンラッパの上部座標でよし)
+    // 弾の発射前の上側座標を取得する(目玉焼きボタンラッパー要素の上部座標)
     const buttonWrapper = document.getElementsByClassName("fried-egg-button-wrapper")[0];
     const buttonWrapperTop = buttonWrapper.getBoundingClientRect().top;
     setbulletMoveState(buttonWrapperTop - targetElementBottom);
+  }
+  useEffect(() => {
+    calcBulletMoveDistance();
+  },[bulletMoveState]);
 
-  },[]);// useEffect
 
   // animationEndのタイミングでたべた数を更新(キャラのヒットタイミング)
   const [ateEggState, setAteEggState] = useState(0);
-  const hitSePlay = () => {
+  const hitSePlay = useCallback(() => {
     if(isAudioOn.current){
       argHandleAudioPlay("hitse");
     }
-  }
+  },[isAudioOn, argHandleAudioPlay])
+  
   const shotSePlay = () => {
     if(isAudioOn.current){
       argHandleAudioPlay("shotse");
     }
   }
-  const handleBulletAnimationEnd = () => {
+  
+  // キャラクタと弾の衝突時のフラッシュ効果を管理
+  const [collisionState, setCollisionState] = useState(false);
+  const handleCollisionAnimEnd = () => {
+    setCollisionState(!collisionState);// キャラクタのフラッシュ終了
+  }
+
+  // ヒット時の効果を集約
+  const handleBulletAnimationEnd = useCallback(() => {
     bulletNums.shift();
     setBulletNums([...bulletNums]);
     setAteEggState(ateEggState + 1)
     setCollisionState(!collisionState);// キャラクタのフラッシュスタート
     // ヒット時の音声
     hitSePlay();
+
+    // ヒット後の処理で弾の移動距離を再計算
+    calcBulletMoveDistance();
+  }, [bulletNums,ateEggState,collisionState,hitSePlay]);
+  
+
+  
+  // ★20250111 IntersectionObserverの処理に置き換え ここから ===============
+  const {log} = console;
+  log("bulletNums",bulletNums)
+  const balletsRef = useRef(null);
+  function getMap() {
+    if (!balletsRef.current) {
+      balletsRef.current = new Map();
+    }
+    return balletsRef.current;
   }
-  // キャラクタと弾の衝突時のフラッシュ効果を管理
-  const [collisionState, setCollisionState] = useState(false);
-  const handleCollisionAnimEnd = () => {
-    setCollisionState(!collisionState);// キャラクタのフラッシュ終了
-  }
+  
+  
+  const [currentBulletNum, setCurrentBulletNum] = useState(0);
+  const currentBullet = useRef(null);
+  useEffect(() => {
+    // 目玉焼きの弾と、キャラクターの下側座標の更新値を取得し当たり判定用classに渡す
+    console.log("if外 : balletsRef.current",balletsRef.current);
     
+    if (balletsRef.current) {
+      const targetElement = document.getElementsByClassName("character-image")[0];
+      const targetElementBottom = targetElement.getBoundingClientRect().bottom;
+      
+      currentBullet.current = balletsRef.current.get(currentBulletNum);
+      
+      if (currentBullet.current) {
+        const myIo = new hitJudgment(
+          currentBullet.current,
+          targetElementBottom,
+          handleBulletAnimationEnd
+        );
+        myIo._init();
+
+        setCurrentBulletNum(currentBulletNum => currentBulletNum + 1);
+      }
+
+
+    }
+  }, [bulletNums, handleBulletAnimationEnd, currentBulletNum]);
+  
+  // ★20250111 IntersectionObserverの処理に置き換え ここまで ===============
+  
   // useStateで降りてきたキャラクタ属性値を元に、case文を使ってキャラクタ画像をセット
   useEffect(() => {
       switch (selectedCharaRef.current) {
@@ -230,9 +281,17 @@ function PlayStart({stateCharacter,handleView,argHandleAudioPlay,argHandleAudioS
           {bulletNums.map((bulletNum) => 
             <img 
               key={`bullet${bulletNum}`} 
+              ref={(el) => {
+                const map = getMap();
+                if(el) {
+                  map.set(bulletNum, el);
+                } else {
+                  map.delete(bulletNum);
+                }
+              }}
               className="fried-egg-bullet fried-egg-bullet-is-active" 
               src={imgFriedEgg}
-              onAnimationEnd={handleBulletAnimationEnd}
+              // onAnimationEnd={handleBulletAnimationEnd}
               alt=""   
             />
           )}
